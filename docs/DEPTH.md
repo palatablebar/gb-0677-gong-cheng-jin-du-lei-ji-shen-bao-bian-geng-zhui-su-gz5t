@@ -13,6 +13,7 @@
 | M5 扣回核算 | 查看并运行扣回核算 | `/api/deductions` | `app/modules/m5_deductions/rules.py` | `tests/test_m5.py` |
 | M6 进度对账 | 查看并运行进度对账 | `/api/valuation` | `app/modules/m6_valuation/rules.py` | `tests/test_m6.py` |
 | M7 签证归档 | 查看并运行签证归档 | `/api/certificates` | `app/modules/m7_certificates/rules.py` | `tests/test_m7.py` |
+| M8 月末签证 | 查看并运行月末签证 | `/api/visa/runs` | `app/visa/rules.py` | `tests/test_visa.py` |
 
 ## 陷阱登记
 
@@ -30,6 +31,11 @@
 | TRAP-07 | 累计量空值 | 按零冲回 | 隔离缺失 | `app/values.py` | `tests/test_m2.py::test_real_null_not_zero` |
 | TRAP-10 | 分币舍入 | 浮点误差 | 分项量化后净额守恒 | `app/modules/m5_deductions/rules.py` | `tests/test_m5.py::test_fraction_rounds_to_cent` |
 | TRAP-23 | 变更生效边界 | 旧价覆盖 | 按周期选择已批版本 | `app/modules/m3_changes/rules.py` | `tests/test_m3.py::test_effective_boundary` |
+| TRAP-31 | 材料叫法不一致 | 按字面匹配漏掉冻结 | 别名归一后按进场批匹配 | `app/visa/aliases.py` | `tests/test_visa.py::test_alias_freeze_catches_different_names` |
+| TRAP-32 | 同批同时刻结论冲突 | 任选其一放行 | 冲突批冻结并阻断签发 | `app/visa/rules.py` | `tests/test_visa.py::test_inspection_conflict_freezes_batch` |
+| TRAP-33 | 复检结论更新 | 旧签证继续有效 | 新批次签发升版，旧版标记已更新 | `app/visa/store.py` | `tests/test_visa.py::test_conclusion_change_updates_current_certificate` |
+| TRAP-34 | 重跑同一批 | 重复放行 | 批次摘要幂等，重复签发返回原证 | `app/visa/store.py` | `tests/test_visa.py::test_issue_and_idempotent_replay` |
+| TRAP-35 | 未检先签 | 无检验记录默认放行 | 无记录一律冻结 | `app/visa/rules.py` | `tests/test_visa.py::test_no_inspection_record_is_frozen` |
 
 ## 对账规则
 

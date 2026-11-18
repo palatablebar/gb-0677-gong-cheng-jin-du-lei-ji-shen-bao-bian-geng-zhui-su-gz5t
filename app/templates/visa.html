@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{title}}</title>
+<link rel="stylesheet" href="/static/theme.css">
+<link rel="stylesheet" href="/static/layout.css">
+<link rel="stylesheet" href="/static/components.css">
+<style>
+.chip{display:inline-block;padding:1px 8px;border:1px solid var(--line-strong);font-size:11px}
+.chip--ok{color:var(--ok);border-color:var(--ok)}
+.chip--warn{color:var(--warn);border-color:var(--warn)}
+.chip--bad{color:var(--bad);border-color:var(--bad)}
+.banner{padding:12px 18px;border:1px solid var(--line-strong);background:var(--panel);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.banner b{font-family:var(--font-num)}
+.banner--ok{border-left:5px solid var(--ok)}
+.banner--bad{border-left:5px solid var(--bad)}
+tr[data-status="可签认"]{border-left:3px solid var(--ok)}
+tr[data-status="冻结"]{border-left:3px solid var(--warn)}
+tr[data-status="不予签认"]{border-left:3px solid var(--bad)}
+button:disabled{opacity:.4;cursor:not-allowed}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="rail">
+  <div class="stamp">月末签证</div>
+  <nav>
+    {% for slug,name in modules %}<a href="/{{slug}}">{{'%02d'|format(loop.index)}} / {{name}}</a>{% endfor %}
+    <a href="/visa" class="active">08 / 月末签证</a>
+  </nav>
+  <small id="run-meta">尚未对账</small>
+</aside>
+<div class="work">
+<header class="topbar">
+  <h1>月末签证工作台</h1>
+  <a class="btn" id="export" href="#">证据导出</a>
+  <button id="issue">签发正式签证</button>
+  <button id="print">打印</button>
+</header>
+<main class="content">
+  <div class="kpis" id="kpis"></div>
+  <section class="panel"><div class="panel__body inputs">
+    <select id="dataset" aria-label="检验批">
+      <option value="story">2026-11 月末·钢筋复检未结</option>
+      <option value="updated">2026-11 复检结论已更新</option>
+    </select>
+    <input id="period" value="2026-11" aria-label="期间" size="9">
+    <button id="reconcile" class="primary">对账</button>
+    <input type="file" id="decl-file" accept=".csv" aria-label="申报记录">
+    <input type="file" id="insp-file" accept=".csv" aria-label="检验记录">
+    <button id="upload">导入并对账</button>
+    <span id="notice" role="status"></span>
+  </div></section>
+  <div class="banner" id="banner" hidden></div>
+  <div class="grid">
+    <section class="panel">
+      <div class="panel__head"><h2>申报 × 检验 逐条对账</h2><span id="line-count"></span></div>
+      <div class="table-scroll"><table class="ledger"><thead><tr>
+        <th>申报号</th><th>材料叫法</th><th>归一编码</th><th>进场批</th><th>清单项</th><th>数量</th><th>单位</th><th>金额</th><th>检验结论</th><th>检验单</th><th>状态</th>
+      </tr></thead><tbody id="lines"></tbody></table></div>
+      <div class="signature"><span id="sig-decl"></span><span id="sig-cert"></span><span id="sig-ver"></span></div>
+    </section>
+    <div class="stack">
+      <section class="panel"><div class="panel__head"><h2>按清单项汇总</h2><span>可签 / 申报 · 元</span></div><div class="panel__body" id="by-item"></div></section>
+      <section class="panel"><div class="panel__head"><h2>现行签证</h2><span id="cert-tag"></span></div><div class="panel__body" id="certificate"></div></section>
+      <section class="panel"><div class="panel__head"><h2>待决事项</h2><span id="pending-count"></span></div><div class="panel__body" id="pending"></div></section>
+    </div>
+  </div>
+</main>
+<footer class="statusbar"><span>月末签证 · CNY</span><span id="status-right"></span></footer>
+</div>
+</div>
+<script src="/static/visa.js"></script>
+</body>
+</html>

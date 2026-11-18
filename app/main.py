@@ -1,5 +1,5 @@
-from flask import Flask,jsonify,request,send_from_directory
-from app.config import ROOT,DATA_DIR,MODULES
+from flask import Flask,jsonify,request,send_from_directory,render_template
+from app.config import ROOT,DATA_DIR,MODULES,TITLE
 from app.errors import DomainError
 from app import pipeline,store
 from app.web import register_pages
@@ -48,6 +48,10 @@ def create_app():
     for index,(slug,title) in enumerate(MODULES,1):
         module=importlib.import_module(f"app.modules.m{index}_{slug}.handler")
         application.register_blueprint(module.bp)
+    from app.visa.handler import bp as visa_bp
+    application.register_blueprint(visa_bp)
+    @application.get("/visa")
+    def visa_page(): return render_template("visa.html",title="月末签证工作台 · "+TITLE,modules=MODULES)
     register_pages(application)
     return application
 app=create_app()

@@ -20,6 +20,11 @@ docker compose exec -T app pytest -q
 - 5. 扣回核算：`/deductions`，`/api/deductions`。
 - 6. 进度对账：`/valuation`，`/api/valuation`。
 - 7. 签证归档：`/certificates`，`/api/certificates`。
+- 8. 月末签证：`/visa`，`/api/visa/runs`。
+
+## 月末签证
+
+申报记录与检验记录逐条对账：材料叫法（名称、牌号、内部编码）先归一为规范编码，再按进场批号取最新检验结论。合格放行、待检与复检中冻结、不合格不予签认、无检验记录一律冻结、同时刻结论冲突冻结。可签认范围对平（申报=可签认+冻结+不予签认，且无未决隔离）后才能签发正式签证；同一批输入重跑复用原批次，重复签发返回原证不重复放行；检验结论更新后形成新批次，签发时本期签证自动升版、旧版标记已更新。样例：`visa_declarations.csv` 配 `visa_inspections.csv`（复检未结）或 `visa_inspections_updated.csv`（结论已更新）。
 
 ## 核心规则
 
